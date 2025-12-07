@@ -9,7 +9,7 @@ $partFiles = $args
 if (-not $partFiles -or $partFiles.Count -eq 0) {
     Write-Host "⚠ 結合する分割ファイルを複数指定してください！"
     Write-Host "例:"
-    Write-Host "join.bat C:\ISO\file.txt.part1 C:\ISO\file.txt.part2"
+    Write-Host "run_join.bat C:\file.txt.part1 C:\file.txt.part2"
     pause
     exit
 }
