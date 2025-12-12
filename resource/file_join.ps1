@@ -9,7 +9,7 @@ $partFiles = $args
 if (-not $partFiles -or $partFiles.Count -eq 0) {
     Write-Host "⚠ 結合する分割ファイルを複数指定してください！"
     Write-Host "例:"
-    Write-Host "run_join.bat C:\file.txt.part1 C:\file.txt.part2"
+    Write-Host "run_join.bat file.txt.part1 file.txt.part2"
     pause
     exit
 }
@@ -29,9 +29,15 @@ foreach ($file in $partFiles) {
 }
 
 # ================================
-# ■ 名前順で正しくソート
+# ■ part番号を抽出して数値でソート
 # ================================
-$validFiles = $validFiles | Sort-Object Name
+$validFiles = $validFiles | Sort-Object {
+    if ($_.Name -match '\.part(\d+)$') {
+        return [int]$matches[1]
+    } else {
+        return 0
+    }
+}
 
 # ================================
 # ■ 結合後の出力ファイル名を作成
@@ -53,8 +59,8 @@ $ofs = [IO.File]::OpenWrite($outputFile)
 Write-Host "📂 結合対象ファイル:"
 $validFiles | ForEach-Object { Write-Host "   - $($_.Name)" }
 
-Write-Host "📦 結合後ファイル: $outputFile"
-Write-Host "▶ 結合処理スタート！"
+Write-Host "📦 出力ファイル: $outputFile"
+Write-Host "▶ 結合開始！"
 Write-Host "--------------------------------------"
 
 # ================================
@@ -93,6 +99,6 @@ $ofs.Close()
 Write-Progress -Activity "ファイル結合中" -Completed
 
 Write-Host "--------------------------------------"
-Write-Host "🎉 すべての結合が完了しました！"
+Write-Host "🎉 結合が完了しました！"
 Write-Host "📄 出力ファイル: $outputFile"
 pause
